@@ -16,23 +16,43 @@ public class PSOProcess implements PSOConstants {
 	private double gBest;
 	private Location gBestLocation;
 	private double[] fitnessValueList = new double[SWARM_SIZE];
+	private int t = 0;
+	private double w;
+	private double err = 9999;
 	
+	public int getT() {
+		return t;
+	}
+
 	Random generator = new Random();
 	
-	public void execute() {
-		initializeSwarm();
-		updateFitnessList();
+	public void execute(boolean forward) {
 		
-		for(int i=0; i<SWARM_SIZE; i++) {
-			pBest[i] = fitnessValueList[i];
-			pBestLocation.add(swarm.get(i).getLocation());
+		if(forward && t < MAX_ITERATION)
+		{
+			t++;
+		}
+		else if(!forward && t > 0)
+		{
+			t = 0;
 		}
 		
-		int t = 0;
-		double w;
-		double err = 9999;
 		
-		while(t < MAX_ITERATION && err > ProblemSet.ERR_TOLERANCE) {
+		if(t == 0)
+		{
+			initializeSwarm();
+			System.out.println("LAL");
+			updateFitnessList();
+			
+			for(int i=0; i<SWARM_SIZE; i++) {
+				pBest[i] = fitnessValueList[i];
+				pBestLocation.add(swarm.get(i).getLocation());
+			}
+			err = 9999;
+		}
+		
+		if(t < MAX_ITERATION && err > ProblemSet.ERR_TOLERANCE) 
+		{
 			// step 1 - update pBest
 			for(int i=0; i<SWARM_SIZE; i++) {
 				if(fitnessValueList[i] < pBest[i]) {
@@ -77,23 +97,26 @@ public class PSOProcess implements PSOConstants {
 			
 			err = ProblemSet.evaluate(gBestLocation) - 0; // minimizing the functions means it's getting closer to 0
 			
+
+			MainFrame.appendText("ITERATION " + t + ": ");
+			MainFrame.appendText("     Best X: " + gBestLocation.getLoc()[0]);
+			MainFrame.appendText("     Best Y: " + gBestLocation.getLoc()[1]);
+			MainFrame.appendText("     Value: " + ProblemSet.evaluate(gBestLocation));
 			
-			System.out.println("ITERATION " + t + ": ");
-			System.out.println("     Best X: " + gBestLocation.getLoc()[0]);
-			System.out.println("     Best Y: " + gBestLocation.getLoc()[1]);
-			System.out.println("     Value: " + ProblemSet.evaluate(gBestLocation));
-			
-			t++;
 			updateFitnessList();
 		}
-		
-		System.out.println("\nSolution found at iteration " + (t - 1) + ", the solutions is:");
-		System.out.println("     Best X: " + gBestLocation.getLoc()[0]);
-		System.out.println("     Best Y: " + gBestLocation.getLoc()[1]);
+		else
+		{
+			MainFrame.appendText("\nSolution found at iteration " + (t - 1) + ", the solutions is:");
+			MainFrame.appendText("     Best X: " + gBestLocation.getLoc()[0]);
+			MainFrame.appendText("     Best Y: " + gBestLocation.getLoc()[1]);
+		}
 	}
 	
 	public void initializeSwarm() {
 		Particle p;
+		
+		swarm.clear();
 		for(int i=0; i<SWARM_SIZE; i++) {
 			p = new Particle();
 			
@@ -119,5 +142,17 @@ public class PSOProcess implements PSOConstants {
 		for(int i=0; i<SWARM_SIZE; i++) {
 			fitnessValueList[i] = swarm.get(i).getFitnessValue();
 		}
+	}
+
+	public Vector<Particle> getSwarm() {
+		return swarm;
+	}
+
+	public Vector<Location> getpBestLocation() {
+		return pBestLocation;
+	}
+
+	public Location getgBestLocation() {
+		return gBestLocation;
 	}
 }
