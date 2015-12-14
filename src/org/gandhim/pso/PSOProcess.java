@@ -36,7 +36,8 @@ public class PSOProcess implements PSOConstants {
 		{
 			t = 0;
 		}
-		
+		else if(t >= MAX_ITERATION)
+			return;
 		
 		if(t == 0)
 		{
