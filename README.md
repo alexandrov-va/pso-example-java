@@ -1,6 +1,6 @@
-pso-example-java
+Particle Swarm Optimization with UI
 ================
 
-Particle Swarm Optimization (PSO) Sample Code using Java
+Swing library is used here for UI programming.
 
-This project is a complete version of Particle Swarm Optimization with Java sample code described in http://gandhim.wordpress.com/2010/04/04/particle-swarm-optimization-pso-sample-code-using-java.
+Thanks to https://github.com/therealmanalu for PSO implementation on Java.
